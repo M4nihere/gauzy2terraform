@@ -17,13 +17,11 @@ jobs:
       id: login-ecr
       uses: aws-actions/amazon-ecr-login@v1
       with:
-        registries: ${{ secrets.AWS_REGISTRY_URL }}
         registry-type: 'public'
-        #aws-region: 'ap-south-1'
-        mask-password: true
-        env:
-          AWS_DEFAULT_REGION: ap-south-1
-
+      env:
+        AWS_DEFAULT_REGION: ap-south-1
+      secrets:
+        REGISTRY: ${{ secrets.AWS_REGISTRY_URL }}
 
     - name: Build, tag, and push images to Amazon ECR
       env:
