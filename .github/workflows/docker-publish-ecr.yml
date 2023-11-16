@@ -19,9 +19,10 @@ jobs:
       with:
         registries: ${{ secrets.AWS_REGISTRY_URL }}
         registry-type: 'public'
-        aws-region: 'ap-south-1'
+        #aws-region: 'ap-south-1'
         mask-password: true
-
+        env:
+          AWS_DEFAULT_REGION: ap-south-1
 
 
     - name: Build, tag, and push images to Amazon ECR
