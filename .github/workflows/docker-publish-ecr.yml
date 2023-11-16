@@ -22,7 +22,9 @@ jobs:
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
       run: |
         docker-compose build
+        docker tag gauzy-api:latest $ECR_REGISTRY/gauzy-api:latest
+        docker push $ECR_REGISTRY/gauzy-api:latest
         docker tag gauzy-webapp:latest $ECR_REGISTRY/gauzy-webapp:latest
         docker push $ECR_REGISTRY/gauzy-webapp:latest
-        docker tag postgres:15-alpine $ECR_REGISTRY/postgres:15-alpine
-        docker push $ECR_REGISTRY/postgres:15-alpine
+        docker tag postgres:15-alpine $ECR_REGISTRY/gauzy-db:15-alpine
+        docker push $ECR_REGISTRY/gauzy-db:15-alpine
