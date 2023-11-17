@@ -1,4 +1,4 @@
-name: Build and Push to ECR
+name: Docker Build and Push
 
 on:
   push:
@@ -13,23 +13,14 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
 
-    - name: Login to Amazon ECR
-      id: login-ecr
-      uses: aws-actions/amazon-ecr-login@v1
-      with:
-        registry-type: 'public'
-        aws-region: ap-south-1
+    - name: Build and push Docker images
       env:
-        REGISTRY: ${{ secrets.AWS_REGISTRY_URL }}
-
-    - name: Build, tag, and push images to Amazon ECR
-      env:
-        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        AWS_REGION: ${{ secrets.AWS_REGION }}
+        ECR_REPOSITORY_URI: ${{ secrets.ECR_REPOSITORY_URI }}
       run: |
         docker-compose build
-        docker tag gauzy-api:latest $ECR_REGISTRY/gauzy-api:latest
-        docker push $ECR_REGISTRY/gauzy-api:latest
-        docker tag gauzy-webapp:latest $ECR_REGISTRY/gauzy-webapp:latest
-        docker push $ECR_REGISTRY/gauzy-webapp:latest
-        docker tag postgres:15-alpine $ECR_REGISTRY/gauzy-db:15-alpine
-        docker push $ECR_REGISTRY/gauzy-db:15-alpine
+        docker-image ls
+        $(aws ecr get-login --no-include-email --region $AWS_REGION)
+        docker-compose push
